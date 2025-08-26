@@ -7,11 +7,21 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
-    },
+      '@': resolve(__dirname, 'src')
+    }
   },
   build: {
-    target: 'esnext',
-    minify: 'esbuild',
+    target: 'es2020',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'vue-router'],
+          cosmic: ['@cosmicjs/sdk']
+        }
+      }
+    }
   },
+  define: {
+    __VUE_PROD_DEVTOOLS__: false
+  }
 })
