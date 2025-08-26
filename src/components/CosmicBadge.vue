@@ -1,7 +1,8 @@
 <template>
   <div 
     v-if="isVisible"
-    class="fixed bottom-5 right-5 z-50 transition-colors duration-200 bg-white border border-gray-200 rounded-lg shadow-lg p-3 w-44 font-system"
+    class="fixed bottom-5 right-5 z-50 transition-colors duration-200"
+    :style="badgeStyle"
   >
     <!-- Close button -->
     <button
@@ -14,10 +15,12 @@
     
     <!-- Main badge content -->
     <a
-      :href="badgeUrl"
+      :href="cosmicUrl"
       target="_blank"
       rel="noopener noreferrer"
-      class="flex items-center gap-2 text-gray-800 text-sm font-medium no-underline hover:bg-gray-50 transition-colors duration-200 -m-3 p-3 rounded-lg"
+      class="flex items-center gap-2 text-gray-800 text-sm font-medium no-underline"
+      @mouseenter="handleMouseEnter"
+      @mouseleave="handleMouseLeave"
     >
       <img 
         src="https://cdn.cosmicjs.com/b67de7d0-c810-11ed-b01d-23d7b265c299-logo508x500.svg" 
@@ -30,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 interface Props {
   bucketSlug: string
@@ -39,10 +42,35 @@ interface Props {
 const props = defineProps<Props>()
 
 const isVisible = ref(false)
+const isHovered = ref(false)
 
-const badgeUrl = computed(() => {
-  return `https://www.cosmicjs.com?utm_source=bucket_${props.bucketSlug}&utm_medium=referral&utm_campaign=app_badge&utm_content=built_with_cosmic`
-})
+const badgeStyle = computed(() => ({
+  position: 'fixed' as const,
+  backgroundColor: isHovered.value ? '#f9fafb' : 'white',
+  border: '1px solid #e5e7eb',
+  borderRadius: '8px',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+  padding: '12px 16px',
+  width: '180px',
+  fontFamily: 'system-ui, -apple-system, sans-serif'
+}))
+
+const cosmicUrl = computed(() => 
+  `https://www.cosmicjs.com?utm_source=bucket_${props.bucketSlug}&utm_medium=referral&utm_campaign=app_badge&utm_content=built_with_cosmic`
+)
+
+const handleDismiss = () => {
+  isVisible.value = false
+  localStorage.setItem('cosmic-badge-dismissed', 'true')
+}
+
+const handleMouseEnter = () => {
+  isHovered.value = true
+}
+
+const handleMouseLeave = () => {
+  isHovered.value = false
+}
 
 onMounted(() => {
   // Show badge after a short delay and check if previously dismissed
@@ -51,18 +79,9 @@ onMounted(() => {
     const timer = setTimeout(() => {
       isVisible.value = true
     }, 1000)
+    
+    // Cleanup timer on unmount
     return () => clearTimeout(timer)
   }
 })
-
-const handleDismiss = () => {
-  isVisible.value = false
-  localStorage.setItem('cosmic-badge-dismissed', 'true')
-}
 </script>
-
-<style scoped>
-.font-system {
-  font-family: system-ui, -apple-system, sans-serif;
-}
-</style>

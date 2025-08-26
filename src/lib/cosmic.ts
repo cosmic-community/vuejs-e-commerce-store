@@ -1,19 +1,10 @@
 import { createBucketClient } from '@cosmicjs/sdk'
 import type { Product, Collection, Review, CosmicResponse } from '@/types'
 
-// Type-safe environment variable access for Vite
-interface ImportMetaEnv {
-  VITE_COSMIC_BUCKET_SLUG: string
-  VITE_COSMIC_READ_KEY: string
-  VITE_COSMIC_WRITE_KEY: string
-}
-
-const env = import.meta.env as ImportMetaEnv
-
 export const cosmic = createBucketClient({
-  bucketSlug: env.VITE_COSMIC_BUCKET_SLUG,
-  readKey: env.VITE_COSMIC_READ_KEY,
-  writeKey: env.VITE_COSMIC_WRITE_KEY,
+  bucketSlug: import.meta.env.VITE_COSMIC_BUCKET_SLUG,
+  readKey: import.meta.env.VITE_COSMIC_READ_KEY,
+  writeKey: import.meta.env.VITE_COSMIC_WRITE_KEY,
 })
 
 // Simple error helper for Cosmic SDK

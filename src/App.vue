@@ -22,6 +22,6 @@ import CosmicBadge from '@/components/CosmicBadge.vue'
 
 // Type-safe environment variable access
 const bucketSlug = computed(() => {
-  return (import.meta.env as any).VITE_COSMIC_BUCKET_SLUG as string || 'demo-bucket'
+  return import.meta.env.VITE_COSMIC_BUCKET_SLUG || 'demo-bucket'
 })
 </script>
